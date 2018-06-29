@@ -8,8 +8,8 @@ deb http://archive.ubuntu.com/ubuntu/ cosmic main restricted universe ">> /etc/a
 #deb http://security.ubuntu.com/ubuntu/ cosmic-security main restricted universe
 
 # NOTE: Speed up when building in TW
-RUN sed -i 's/archive.ubuntu.com/free.nchc.org.tw/g' \
-    /etc/apt/sources.list
+# RUN sed -i 's/archive.ubuntu.com/free.nchc.org.tw/g' \
+#    /etc/apt/sources.list
 
 # Install apache2:2.4.33
 RUN apt-get update && \

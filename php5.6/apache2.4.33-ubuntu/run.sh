@@ -4,7 +4,7 @@ docker rm -fv httpd2
 docker run -d -p 80:80 \
     --name httpd2 \
     -v /home/wmyao/workspaces/phpbase/sh/phpbase/html:/var/www/html \
-docker-reg.emotibot.com.cn:55688/php5.6:apache2.4.33-ubuntu-2
+docker-reg.emotibot.com.cn:55688/php5.6:apache2.4.33-ubuntu-3
 #docker-reg.emotibot.com.cn:55688/php5.6:apache2.4.33-1
 
 
