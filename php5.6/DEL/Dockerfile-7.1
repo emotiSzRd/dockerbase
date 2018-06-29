@@ -1,0 +1,52 @@
+#FROM debian:stretch-slim
+FROM debian:buster-slim
+
+# Orig source:
+# https://github.com/docker-library/php
+
+# Reference:
+# 如何在 Debian Stretch 中安装使用 PHP5
+# https://www.debian.cn/archives/1511
+# latest apache package
+# https://packages.debian.org/search?keywords=apache2
+
+# dependencies required for running "phpize"
+# (see persistent deps below)
+ENV PHPIZE_DEPS \
+		autoconf \
+		dpkg-dev \
+		file \
+		g++ \
+		gcc \
+		libc-dev \
+		make \
+		pkg-config \
+		re2c
+
+# persistent / runtime deps
+RUN apt-get update && apt-get install -y \
+		$PHPIZE_DEPS \
+		ca-certificates \
+		curl \
+		libcurl4 \
+		xz-utils \
+	--no-install-recommends && rm -r /var/lib/apt/lists/*
+
+# Install apache 2.4.33
+RUN cp /etc/apt/sources.list /etc/opt/sources.list.orig
+RUN echo "deb http://cdn-fastly.deb.debian.org/debian buster main contrib non-free"  >> /etc/apt/sources.list
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		apache2 \
+	&& rm -rf /var/lib/apt/lists/*
+#RUN mv /etc/opt/sources.list.orig /etc/opt/sources.list
+
+RUN /usr/sbin/a2dismod mpm_event && /usr/sbin/a2enmod mpm_prefork
+COPY docker-php-ext-* docker-php-entrypoint /usr/local/bin/
+
+
+ENTRYPOINT ["docker-php-entrypoint"]
+COPY apache2-foreground /usr/local/bin/
+WORKDIR /var/www/html
+EXPOSE 80
+CMD ["apache2-foreground"]

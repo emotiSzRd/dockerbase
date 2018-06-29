@@ -1,0 +1,57 @@
+FROM httpd:2.4.33
+
+# Orig source:
+# https://github.com/docker-library/php
+
+# Reference:
+# 如何在 Debian Stretch 中安装使用 PHP5
+# https://www.debian.cn/archives/1511
+# latest apache package
+# https://packages.debian.org/search?keywords=apache2
+
+# dependencies required for running "phpize"
+# (see persistent deps below)
+ENV PHPIZE_DEPS \
+		autoconf \
+		dpkg-dev \
+		file \
+		g++ \
+		gcc \
+		libc-dev \
+		make \
+		pkg-config \
+		re2c
+
+# persistent / runtime deps
+RUN apt-get update && apt-get install -y \
+		$PHPIZE_DEPS \
+		ca-certificates \
+		curl \
+		libcurl3 \
+		xz-utils \
+	--no-install-recommends && rm -r /var/lib/apt/lists/*
+
+# Install php5.6
+RUN apt-get update; \
+    apt-get install -y apt-transport-https lsb-release ca-certificates wget
+RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg; \
+    echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php5.list
+RUN apt-get update; \
+    apt-get install -y php5.6 php5.6-mysql \
+            php5.6-xml php5.6-zip php5.6-json \
+            php5.6-gd php5.6-bcmath \
+                      php5.6-mbstring \
+                      php5.6-curl
+
+# DEL??
+#RUN /usr/sbin/a2dismod mpm_event && /usr/sbin/a2enmod mpm_prefork
+COPY docker-php-ext-* docker-php-entrypoint /usr/local/bin/
+
+
+ENTRYPOINT ["docker-php-entrypoint"]
+COPY apache2-foreground /usr/local/bin/
+WORKDIR /var/www/html
+EXPOSE 80
+#CMD ["apache2-foreground"]
+
+CMD ["httpd-foreground"]
