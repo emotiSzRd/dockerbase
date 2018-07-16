@@ -1,0 +1,10 @@
+#FROM richxsl/rhel7
+FROM rhel7.4-base
+
+# Note: need to use centos's repo
+
+#RUN yum-config-manager --add-repo XXXXX??
+# There are no enabled repos.
+#  Run "yum repolist all" to see the repos you have.
+#  You can enable repos with yum-config-manager --enable <repo>
+#RUN yum update
