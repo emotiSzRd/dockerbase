@@ -1,0 +1,7 @@
+version: '3'
+services:
+  rehlbase:
+    build:
+      context: ./
+      dockerfile: Dockerfile-rehl7x
+    image: wmyaoyao.pw/baseimage:rehl
