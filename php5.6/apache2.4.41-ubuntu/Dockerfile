@@ -1,20 +1,27 @@
 # For security reason, we need a php5.6 with the latest apache (2.4.33)
 # The image should be able to replace the official php5.6:apache image
-FROM ubuntu:18.04
-MAINTAINER William Yao <wmyaoyao@gmail.com>
+FROM ubuntu18.04:apache2.4.41-nosrc
+MAINTAINER Huanglp <huanglp@gmail.com>
 
 # Add 18.10 repo for latest apache2
-RUN echo " \
-deb http://archive.ubuntu.com/ubuntu/ cosmic main restricted universe ">> /etc/apt/sources.list
+#RUN echo " \
+#deb http://archive.ubuntu.com/ubuntu/ cosmic main restricted universe ">> /etc/apt/sources.list
 #deb http://security.ubuntu.com/ubuntu/ cosmic-security main restricted universe
 
 # NOTE: Speed up the download speed with a TW mirror
 # RUN sed -i 's/archive.ubuntu.com/free.nchc.org.tw/g' \
 #    /etc/apt/sources.list
 
-# Install apache2:2.4.33
-RUN apt-get update && \
-    apt-get install -y apache2=2.4.33-3ubuntu2
+# Install apache2:2.4.41
+#RUN apt-get update
+#RUN apt-get upgrade -y
+#RUN apt install -y software-properties-common
+#RUN add-apt-repository ppa:ondrej/apache2
+#RUN apt update
+#RUN apt install -y apache2
+
+#RUN apt-get update && \
+#    apt-get install -y apache2=2.4.41-3ubuntu2
 
 # Setup timezone first or we'll be stuck when installing php (tzdata)
 RUN echo "Asia/Shanghai" > /etc/timezone
@@ -24,8 +31,7 @@ RUN dpkg-reconfigure -f noninteractive tzdata
 
 # Install php5.6 fron non-official repo
 # https://tecadmin.net/install-php5-on-ubuntu/
-RUN apt-get install -y software-properties-common && \
-    add-apt-repository ppa:ondrej/php && \
+RUN add-apt-repository ppa:ondrej/php && \
     apt-get update && apt-get install -y \
       php5.6 \
       php5.6-bcmath \
